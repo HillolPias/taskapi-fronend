@@ -61,7 +61,7 @@ export default function ChatPage() {
               Assistant
             </h1>
           </div>
-          <span className="font-mono text-xs text-slate">gemini-flash</span>
+          <span className="font-mono text-xs text-slate">gpt-4o-mini</span>
         </header>
 
         <div className="flex-1 overflow-y-auto py-8 space-y-6">
