@@ -136,7 +136,7 @@ export default function ChatPage() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about your tasks..."
+            placeholder="Ask about your projects, tasks, or create a new one..."
             disabled={isLoading}
             className="flex-1 rounded-md border border-hairline bg-transparent px-3 py-2 text-sm text-ink placeholder:text-slate/60 focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent disabled:opacity-50"
           />
