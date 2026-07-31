@@ -71,12 +71,49 @@ export async function deleteProject(projectId: number) {
   if (!res.ok) throw new Error("Failed to delete project");
 }
 
-export async function sendChatMessage(message: string) {
-  const res = await fetch(`${API_URL}/chat/graph`, {
+// export async function sendChatMessage(message: string) {
+//   const res = await fetch(`${API_URL}/chat/graph`, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({ message }),
+//   });
+//   if (!res.ok) throw new Error("Failed to get chat response");
+//   return res.json();
+// }
+
+export async function sendChatMessage(
+  message: string,
+  onChunk: (chunk: string) => void,
+) {
+  const res = await fetch(`${API_URL}/chat/stream`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ message }),
   });
-  if (!res.ok) throw new Error("Failed to get chat response");
-  return res.json();
+
+  if (!res.ok) {
+    throw new Error("Failed to get chat response");
+  }
+
+  const reader = res.body?.getReader();
+
+  if (!reader) {
+    throw new Error("No response body");
+  }
+
+  const decoder = new TextDecoder();
+
+  while (true) {
+    const { done, value } = await reader.read();
+
+    if (done) break;
+
+    const chunk = decoder.decode(value, {
+      stream: true,
+    });
+
+    onChunk(chunk);
+  }
 }
