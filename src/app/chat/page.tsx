@@ -83,16 +83,15 @@ export default function ChatPage() {
               </p>
 
               <div className="mt-3 space-y-1 font-mono text-xs text-slate/70">
-                <p>&quot;What projects do I have?&quot;</p>
-                <p>&quot;Create a project called Personal&quot;</p>
                 <p>
-                  &quot;Add a task &apos;Buy groceries&apos; to Personal&quot;
+                  &quot;What projects do I have?&quot; · &quot;Create a project
+                  called Personal&quot; · &quot;Add a task &apos;Buy
+                  groceries&apos; to Personal&quot; · &quot;Show incomplete
+                  tasks in project 1&quot; · &quot;Mark task 3 as
+                  completed&quot; · &quot;Rename task 5 to Buy milk&quot; ·
+                  &quot;Move task 2 to project 3&quot; · &quot;What&apos;s the
+                  progress of project 1?&quot;
                 </p>
-                <p>&quot;Show incomplete tasks in project 1&quot;</p>
-                <p>&quot;Mark task 3 as completed&quot;</p>
-                <p>&quot;Rename task 5 to Buy milk&quot;</p>
-                <p>&quot;Move task 2 to project 3&quot;</p>
-                <p>&quot;What&apos;s the progress of project 1?&quot;</p>
               </div>
             </div>
           )}
