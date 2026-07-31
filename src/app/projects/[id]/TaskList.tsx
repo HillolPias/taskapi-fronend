@@ -108,7 +108,7 @@ export default function TaskList({
               ) : (
                 <>
                   <span
-                    className={`flex-1 text-[15px] truncate ${
+                    className={`flex-1 text-[15px] flex-col gap-1 md:truncate ${
                       task.completed ? "line-through text-slate" : "text-ink"
                     }`}
                   >

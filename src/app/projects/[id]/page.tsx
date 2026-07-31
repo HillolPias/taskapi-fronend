@@ -26,8 +26,8 @@ export default async function ProjectDetailPage({
             projects
           </Link>
 
-          <div className="flex items-baseline justify-between gap-4">
-            <h1 className="font-display text-2xl font-bold tracking-tight text-ink truncate">
+          <div className="flex flex-col gap-2 md:items-baseline md:justify-between md:gap-4">
+            <h1 className="font-display text-2xl font-bold tracking-tight text-ink wrap-break-word md:truncate">
               {project.name}
             </h1>
             <span className="font-mono text-xs text-slate shrink-0">
