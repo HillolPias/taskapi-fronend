@@ -62,14 +62,18 @@ export default function ProjectListClient({
                 </span>
                 <ArrowRight
                   size={16}
-                  className="text-slate opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0 ml-3"
+                  className="hidden md:block text-slate opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0 ml-3"
                 />
               </Link>
 
               <button
-                onClick={() => handleDelete(project.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleDelete(project.id);
+                }}
                 aria-label={`Delete ${project.name}`}
-                className="opacity-0 group-hover:opacity-100 text-slate hover:text-red-600 transition-opacity shrink-0"
+                className="opacity-100 md:opacity-0 md:group-hover:opacity-100 text-slate hover:text-red-600 transition-opacity shrink-0"
               >
                 <Trash2 size={15} />
               </button>

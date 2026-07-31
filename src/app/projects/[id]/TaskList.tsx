@@ -117,14 +117,15 @@ export default function TaskList({
                   <button
                     onClick={() => startEditing(task)}
                     aria-label={`Edit ${task.title}`}
-                    className="opacity-0 group-hover:opacity-100 text-slate hover:text-accent transition-opacity shrink-0"
+                    className="text-slate hover:text-accent shrink-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                   >
                     <Pencil size={14} />
                   </button>
+
                   <button
                     onClick={() => handleDelete(task.id)}
                     aria-label={`Delete ${task.title}`}
-                    className="opacity-0 group-hover:opacity-100 text-slate hover:text-red-600 transition-opacity shrink-0"
+                    className="text-slate hover:text-red-600 shrink-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                   >
                     <Trash2 size={14} />
                   </button>
