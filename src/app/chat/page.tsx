@@ -19,75 +19,21 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
-  // async function handleSubmit(e: React.FormEvent) {
-  //   e.preventDefault();
-  //   const trimmed = input.trim();
-  //   if (!trimmed || isLoading) return;
-
-  //   setMessages((prev) => [...prev, { role: "user", content: trimmed }]);
-  //   setInput("");
-  //   setIsLoading(true);
-
-  //   try {
-  //     const response = await sendChatMessage(trimmed);
-  //     setMessages((prev) => [
-  //       ...prev,
-  //       { role: "assistant", content: response.reply },
-  //     ]);
-  //   } catch {
-  //     setMessages((prev) => [
-  //       ...prev,
-  //       {
-  //         role: "assistant",
-  //         content: "Something went wrong reaching the assistant. Try again.",
-  //       },
-  //     ]);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     const trimmed = input.trim();
-
     if (!trimmed || isLoading) return;
 
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: "user",
-        content: trimmed,
-      },
-    ]);
-
+    setMessages((prev) => [...prev, { role: "user", content: trimmed }]);
     setInput("");
     setIsLoading(true);
 
-    // Create empty assistant message
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: "assistant",
-        content: "",
-      },
-    ]);
-
     try {
-      await sendChatMessage(trimmed, (chunk) => {
-        setMessages((prev) => {
-          const updated = [...prev];
-
-          const lastMessage = updated[updated.length - 1];
-
-          updated[updated.length - 1] = {
-            ...lastMessage,
-            content: lastMessage.content + chunk,
-          };
-
-          return updated;
-        });
-      });
+      const response = await sendChatMessage(trimmed);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: response.reply },
+      ]);
     } catch {
       setMessages((prev) => [
         ...prev,
