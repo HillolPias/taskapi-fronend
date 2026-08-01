@@ -86,7 +86,7 @@ export async function streamChatMessage(
   message: string,
   onToken: (token: string) => void,
 ) {
-  const res = await fetch(`${API_URL}/chat/rag/stream`, {
+  const res = await fetch(`${API_URL}/chat/graph/stream`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message }),
