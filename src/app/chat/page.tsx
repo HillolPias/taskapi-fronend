@@ -119,9 +119,9 @@ export default function ChatPage() {
                     : "text-[15px] text-ink leading-relaxed"
                 }
               >
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {msg.content}
-                </ReactMarkdown>
+                {/* <ReactMarkdown remarkPlugins={[remarkGfm]}> */}
+                {msg.content}
+                {/* </ReactMarkdown> */}
                 {isLoading &&
                   i === messages.length - 1 &&
                   msg.role === "assistant" && (
