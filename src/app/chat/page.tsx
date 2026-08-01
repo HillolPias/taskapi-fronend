@@ -1,8 +1,8 @@
 // src/app/chat/page.tsx
 "use client";
 
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+// import ReactMarkdown from "react-markdown";
+// import remarkGfm from "remark-gfm";
 import { useState, useRef, useEffect } from "react";
 import { ChatMessage } from "@/lib/types";
 import { streamChatMessage } from "@/lib/api";
