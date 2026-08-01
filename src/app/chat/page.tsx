@@ -1,13 +1,13 @@
 // src/app/chat/page.tsx
 "use client";
 
-// import ReactMarkdown from "react-markdown";
-// import remarkGfm from "remark-gfm";
 import { useState, useRef, useEffect } from "react";
 import { ChatMessage } from "@/lib/types";
 import { streamChatMessage } from "@/lib/api";
 import Link from "next/link";
 import { ArrowLeft, ArrowUp } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -119,9 +119,9 @@ export default function ChatPage() {
                     : "text-[15px] text-ink leading-relaxed"
                 }
               >
-                {/* <ReactMarkdown remarkPlugins={[remarkGfm]}> */}
-                {msg.content}
-                {/* </ReactMarkdown> */}
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {msg.content}
+                </ReactMarkdown>
                 {isLoading &&
                   i === messages.length - 1 &&
                   msg.role === "assistant" && (
