@@ -80,3 +80,29 @@ export async function sendChatMessage(message: string) {
   if (!res.ok) throw new Error("Failed to get chat response");
   return res.json();
 }
+
+// Add the streaming fetch helper
+export async function streamChatMessage(
+  message: string,
+  onToken: (token: string) => void,
+) {
+  const res = await fetch(`${API_URL}/chat/rag/stream`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message }),
+  });
+
+  if (!res.ok || !res.body) {
+    throw new Error(`${res.status}: ${res.statusText}`);
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const token = decoder.decode(value, { stream: true });
+    onToken(token);
+  }
+}

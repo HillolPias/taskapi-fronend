@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useState, useRef, useEffect } from "react";
 import { ChatMessage } from "@/lib/types";
-import { sendChatMessage } from "@/lib/api";
+import { streamChatMessage } from "@/lib/api";
 import Link from "next/link";
 import { ArrowLeft, ArrowUp } from "lucide-react";
 
@@ -28,20 +28,31 @@ export default function ChatPage() {
     setInput("");
     setIsLoading(true);
 
+    // Add an empty assistant that we'll fill in as tokens arrive
+    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+
     try {
-      const response = await sendChatMessage(trimmed);
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: response.reply },
-      ]);
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
+      await streamChatMessage(trimmed, (token) => {
+        setMessages((prev) => {
+          const updated = [...prev];
+          const last = updated[updated.length - 1];
+          updated[updated.length - 1] = {
+            ...last,
+            content: last.content + token,
+          };
+          return updated;
+        });
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      setMessages((prev) => {
+        const updated = [...prev];
+        updated[updated.length - 1] = {
           role: "assistant",
-          content: "Something went wrong reaching the assistant. Try again.",
-        },
-      ]);
+          content: `Something went wrong: ${message}`,
+        };
+        return updated;
+      });
     } finally {
       setIsLoading(false);
     }
@@ -111,18 +122,14 @@ export default function ChatPage() {
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {msg.content}
                 </ReactMarkdown>
+                {isLoading &&
+                  i === messages.length - 1 &&
+                  msg.role === "assistant" && (
+                    <span className="inline-block w-1.5 h-4 bg-accent ml-0.5 animate-pulse align-middle" />
+                  )}
               </div>
             </div>
           ))}
-
-          {isLoading && (
-            <div className="space-y-1.5">
-              <span className="font-mono text-[11px] uppercase tracking-wider text-slate">
-                Ledger
-              </span>
-              <div className="text-[15px] text-slate/70">thinking…</div>
-            </div>
-          )}
 
           <div ref={bottomRef} />
         </div>
