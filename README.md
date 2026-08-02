@@ -9,3 +9,7 @@ Built with Next.js App Router (Server + Client Components), TypeScript, and Tail
 
 **Stack:** Next.js 15 (App Router) · TypeScript · Tailwind CSS · Server Components
 **Deployed:** Vercel
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
