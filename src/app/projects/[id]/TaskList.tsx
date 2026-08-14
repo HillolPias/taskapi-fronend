@@ -17,6 +17,7 @@ export default function TaskList({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
+  const [dueDate, setDueDate] = useState("");
 
   async function handleToggle(task: Task) {
     const updated = await updateTask(task.id, { completed: !task.completed });
@@ -34,9 +35,14 @@ export default function TaskList({
 
     setIsSubmitting(true);
     try {
-      const created = await createTaskForProject(projectId, newTitle);
+      const created = await createTaskForProject(
+        projectId,
+        newTitle,
+        dueDate || null,
+      );
       setTasks((prev) => [...prev, created]);
       setNewTitle("");
+      setDueDate("");
     } finally {
       setIsSubmitting(false);
     }
@@ -58,6 +64,19 @@ export default function TaskList({
     setTasks((prev) => prev.map((t) => (t.id === taskId ? updated : t)));
     setEditingId(null);
     setEditValue("");
+  }
+
+  function isOverdue(dueDate: string | null, completed: boolean): boolean {
+    if (!dueDate || completed) return false;
+    const today = new Date().toISOString().split("T")[0];
+    return dueDate < today;
+  }
+
+  function formatDueDate(dueDate: string): string {
+    return new Date(dueDate + "T00:00:00").toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+    });
   }
 
   return (
@@ -114,6 +133,17 @@ export default function TaskList({
                   >
                     {task.title}
                   </span>
+
+                  {task.due_date &&
+                    (isOverdue(task.due_date, task.completed) ? (
+                      <span className="font-mono text-[11px] px-1.5 py-0.5 rounded bg-red-50 text-red-600 shrink">
+                        Overdue · {formatDueDate(task.due_date)}
+                      </span>
+                    ) : (
+                      <span className="font-mono text-[11px] text-slate shrink-0">
+                        {formatDueDate(task.due_date)}
+                      </span>
+                    ))}
                   <button
                     onClick={() => startEditing(task)}
                     aria-label={`Edit ${task.title}`}
@@ -143,6 +173,12 @@ export default function TaskList({
           onChange={(e) => setNewTitle(e.target.value)}
           placeholder="New task title..."
           className="flex-1 rounded-md border border-hairline bg-transparent px-3 py-2 text-sm text-ink placeholder:text-slate/60 focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent"
+        />
+        <input
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+          className="rounded-md border border-hairline bg-transparent px-3 py-2 text-sm text-ink focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent"
         />
         <button
           type="submit"

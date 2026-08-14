@@ -42,13 +42,17 @@ export async function deleteTask(taskId: number) {
   if (!res.ok) throw new Error("Failed to delete task");
 }
 
-export async function createTaskForProject(projectId: number, title: string) {
+export async function createTaskForProject(
+  projectId: number,
+  title: string,
+  dueDate: string | null = null,
+) {
   const res = await fetch(`${API_URL}/projects/${projectId}/tasks`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ title }),
+    body: JSON.stringify({ title, due_date: dueDate }),
   });
   if (!res.ok) throw new Error("Failed to create task");
   return res.json();
