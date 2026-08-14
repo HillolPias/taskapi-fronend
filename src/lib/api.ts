@@ -71,6 +71,18 @@ export async function deleteProject(projectId: number) {
   if (!res.ok) throw new Error("Failed to delete project");
 }
 
+export async function updateProject(projectId: number, name: string) {
+  const res = await fetch(`${API_URL}/projects/${projectId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name }),
+  });
+  if (!res.ok) throw new Error("Failed to update project");
+  return res.json();
+}
+
 export async function sendChatMessage(message: string) {
   const res = await fetch(`${API_URL}/chat/graph`, {
     method: "POST",

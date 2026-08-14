@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Project } from "@/lib/types";
-import { createProject, deleteProject } from "@/lib/api";
-import { ArrowRight, Trash2, Plus } from "lucide-react";
+import { createProject, deleteProject, updateProject } from "@/lib/api";
+import { ArrowRight, Trash2, Plus, Pencil, Check, X } from "lucide-react";
 
 export default function ProjectListClient({
   initialProjects,
@@ -14,6 +14,8 @@ export default function ProjectListClient({
   const [projects, setProjects] = useState(initialProjects);
   const [newName, setNewName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState("");
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
@@ -39,6 +41,24 @@ export default function ProjectListClient({
     setProjects((prev) => prev.filter((p) => p.id !== projectId));
   }
 
+  function startEditing(project: Project) {
+    setEditingId(project.id);
+    setEditValue(project.name);
+  }
+
+  function cancelEditing() {
+    setEditingId(null);
+    setEditValue("");
+  }
+
+  async function handleSaveEdit(projectId: number) {
+    if (!editValue.trim()) return;
+    const updated = await updateProject(projectId, editValue);
+    setProjects((prev) => prev.map((p) => (p.id === projectId ? updated : p)));
+    setEditingId(null);
+    setEditValue("");
+  }
+
   return (
     <div>
       {projects.length === 0 ? (
@@ -53,30 +73,64 @@ export default function ProjectListClient({
                 P-{String(project.id).padStart(3, "0")}
               </span>
 
-              <Link
-                href={`/projects/${project.id}`}
-                className="flex-1 flex items-center justify-between min-w-0"
-              >
-                <span className="text-[15px] text-ink truncate">
-                  {project.name}
-                </span>
-                <ArrowRight
-                  size={16}
-                  className="hidden md:block text-slate opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0 ml-3"
-                />
-              </Link>
-
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleDelete(project.id);
-                }}
-                aria-label={`Delete ${project.name}`}
-                className="opacity-100 md:opacity-0 md:group-hover:opacity-100 text-slate hover:text-red-600 transition-opacity shrink-0"
-              >
-                <Trash2 size={15} />
-              </button>
+              {editingId === project.id ? (
+                <>
+                  <input
+                    type="text"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    autoFocus
+                    className="flex-1 rounded-md border border-hairline bg-transparent px-2 py-1 text-[15px] text-ink focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent"
+                  />
+                  <button
+                    onClick={() => handleSaveEdit(project.id)}
+                    aria-label="Save"
+                    className="text-accent hover:text-accent/70 shrink-0"
+                  >
+                    <Check size={16} />
+                  </button>
+                  <button
+                    onClick={cancelEditing}
+                    aria-label="Cancel"
+                    className="text-slate hover:text-ink shrink-0"
+                  >
+                    <X size={16} />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href={`/projects/${project.id}`}
+                    className="flex-1 flex items-center justify-between min-w-0"
+                  >
+                    <span className="text-[15px] text-ink truncate">
+                      {project.name}
+                    </span>
+                    <ArrowRight
+                      size={16}
+                      className="hidden md:block text-slate opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0 ml-3"
+                    />
+                  </Link>
+                  <button
+                    onClick={() => startEditing(project)}
+                    aria-label={`Edit ${project.name}`}
+                    className="text-slate hover:text-accent shrink-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                  >
+                    <Pencil size={14} />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDelete(project.id);
+                    }}
+                    aria-label={`Delete ${project.name}`}
+                    className="opacity-100 md:opacity-0 md:group-hover:opacity-100 text-slate hover:text-red-600 transition-opacity shrink-0"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </>
+              )}
             </li>
           ))}
         </ul>
